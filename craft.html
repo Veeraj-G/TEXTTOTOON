@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TextToToon</title>
+    <link rel="stylesheet" href="style.css" />
+    <script>
+        function selectGrid(idx) {
+          const labels = ["TYPE-1", "TYPE-2", "TYPE-3", "TYPE-4"];
+          document.getElementById("selected-grid-label").innerText = labels[idx];
+          document.getElementById("dropdown-list").style.display = "none";
+          // Update checkmark and selected class
+          const items = document.querySelectorAll(".dropdown-item");
+          items.forEach((item, i) => {
+            if (i === idx) {
+              item.classList.add("selected");
+              if (!item.querySelector(".checkmark")) {
+                const check = document.createElement("span");
+                check.className = "checkmark";
+                check.innerHTML = "&#10003;";
+                item.appendChild(check);
+              }
+            } else {
+              item.classList.remove("selected");
+              const check = item.querySelector(".checkmark");
+              if (check) check.remove();
+            }
+          });
+          selectedGridType = idx;
+          updateOutputDemo();
+        }
+      </script>
+</head>
+<body>
+    <header>
+      <div class="navbar">
+        <div class="logo"><a href="index.html">TextToToon</a></div>
+        <ul class="links">
+          <li><a href="index.html#home">Home</a></li>
+          <li><a href="index.html#about">About</a></li>
+          <li><a href="index.html#contact">Contact</a></li>
+        </ul>
+        <!-- <button type="button" class="craft-button"><a href="craft.html" class="action_btn">Craft</a></button> -->
+        <!-- <div class="toggle_btn"> -->
+          <!-- <i class="fa-solid fa-bars"></i> -->
+        <!-- </div> -->
+      </div>
+    </header>
+    <div class="main-container">
+        <div class="sections-container">
+            <div class="left-panel">
+                <div class="section">
+                    <div class="search_container">
+                        <input type="text" placeholder="Type..." />
+                    </div>
+                    <button id="generate-btn" class="option-item">Generate Comic</button>
+                    <div class="options-section">
+                        <div class="grid-type-dropdown">
+                            <div class="dropdown-selected" onclick="toggleDropdown()">
+                                <span id="selected-grid-label">TYPE-1</span>
+                                <span class="dropdown-arrow">&#9662;</span>
+                            </div>
+                            <div class="dropdown-list" id="dropdown-list" style="display: none;">
+                                <div class="dropdown-item selected" onclick="selectGrid(0)">
+                                    <span>TYPE-1</span>
+                                    <span class="checkmark">&#10003;</span>
+                                </div>
+                                <div class="dropdown-item" onclick="selectGrid(1)">
+                                    <span>TYPE-2</span>
+                                </div>
+                                <div class="dropdown-item" onclick="selectGrid(2)">
+                                    <span>TYPE-3</span>
+                                </div>
+                                <div class="dropdown-item" onclick="selectGrid(3)">
+                                    <span>TYPE-4</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="picture-style-dropdown">
+                            <div class="dropdown-selected" onclick="togglePictureDropdown()">
+                                <span id="selected-picture-label">Japanese</span>
+                                <span class="dropdown-arrow">&#9662;</span>
+                            </div>
+                            <div class="dropdown-list" id="picture-dropdown-list" style="display: none;">
+                                <div class="dropdown-item selected" onclick="selectPictureType(0)">Japanese <span class="checkmark">&#10003;</span></div>
+                                <div class="dropdown-item" onclick="selectPictureType(1)">American</div>
+                                <div class="dropdown-item" onclick="selectPictureType(2)">Egyptian</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="right-panel">
+                <div class="section output-section">
+                    <h2 class="output-title">Generated Comic Panel</h2>
+                    <div id="output-picture-style" class="output-picture-style">Style: Japanese</div>
+                    <div id="output-images" class="output-images grid-0">
+                        <!-- Placeholder images will be inserted by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function toggleDropdown() {
+            const list = document.getElementById('dropdown-list');
+            list.style.display = list.style.display === 'block' ? 'none' : 'block';
+        }
+        function selectGrid(idx) {
+            const labels = ['TYPE-1', 'TYPE-2', 'TYPE-3', 'TYPE-4'];
+            const icons = [
+                '<svg width="24" height="24" viewBox="0 0 24 24"><rect x="2" y="2" width="9" height="9" fill="#444"/><rect x="13" y="2" width="9" height="9" fill="#444"/><rect x="2" y="13" width="9" height="9" fill="#444"/><rect x="13" y="13" width="9" height="9" fill="#444"/></svg>',
+                '<svg width="24" height="24" viewBox="0 0 24 24"><rect x="2" y="2" width="9" height="9" fill="#444"/><rect x="13" y="2" width="9" height="9" fill="#888"/><rect x="2" y="13" width="9" height="9" fill="#888"/><rect x="13" y="13" width="9" height="9" fill="#444"/></svg>',
+                '<svg width="24" height="24" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="9" fill="#444"/><rect x="2" y="13" width="9" height="9" fill="#888"/><rect x="13" y="13" width="9" height="9" fill="#444"/></svg>',
+                '<svg width="24" height="24" viewBox="0 0 24 24"><rect x="2" y="2" width="9" height="20" fill="#444"/><rect x="13" y="2" width="9" height="9" fill="#888"/><rect x="13" y="13" width="9" height="9" fill="#888"/></svg>'
+            ];
+            document.getElementById('selected-grid-label').innerText = labels[idx];
+            document.getElementById('selected-grid-icon').innerHTML = icons[idx];
+            document.getElementById('dropdown-list').style.display = 'none';
+            // Update checkmark
+            const items = document.querySelectorAll('.dropdown-item');
+            items.forEach((item, i) => {
+                if (i === idx) {
+                    item.classList.add('selected');
+                    if (!item.querySelector('.checkmark')) {
+                        const check = document.createElement('span');
+                        check.className = 'checkmark';
+                        check.innerHTML = '&#10003;';
+                        item.appendChild(check);
+                    }
+                } else {
+                    item.classList.remove('selected');
+                    const check = item.querySelector('.checkmark');
+                    if (check) check.remove();
+                }
+            });
+            selectedGridType = idx;
+            updateOutputDemo();
+        }
+        // Close dropdown on outside click
+        document.addEventListener('click', function(event) {
+            const dropdown = document.querySelector('.grid-type-dropdown');
+            if (!dropdown.contains(event.target)) {
+                document.getElementById('dropdown-list').style.display = 'none';
+            }
+        });
+        function togglePictureDropdown() {
+            const list = document.getElementById('picture-dropdown-list');
+            list.style.display = list.style.display === 'block' ? 'none' : 'block';
+        }
+        // Close picture dropdown on outside click
+        document.addEventListener('click', function(event) {
+            const dropdown = document.querySelector('.picture-style-dropdown');
+            if (dropdown && !dropdown.contains(event.target)) {
+                document.getElementById('picture-dropdown-list').style.display = 'none';
+            }
+        });
+        function selectPictureType(idx) {
+            const labels = ['Japanese', 'American', 'Egyptian'];
+            document.getElementById('selected-picture-label').innerText = labels[idx];
+            document.getElementById('picture-dropdown-list').style.display = 'none';
+            // Update checkmark
+            const items = document.querySelectorAll('#picture-dropdown-list .dropdown-item');
+            items.forEach((item, i) => {
+                if (i === idx) {
+                    item.classList.add('selected');
+                    if (!item.querySelector('.checkmark')) {
+                        const check = document.createElement('span');
+                        check.className = 'checkmark';
+                        check.innerHTML = '&#10003;';
+                        item.appendChild(check);
+                    }
+                } else {
+                    item.classList.remove('selected');
+                    const check = item.querySelector('.checkmark');
+                    if (check) check.remove();
+                }
+            });
+            selectedPictureType = idx;
+            updateOutputDemo();
+        }
+        // Placeholders for demo
+        const placeholderImages = [
+            'https://placehold.co/300x300?text=1',
+            'https://placehold.co/300x300?text=2',
+            'https://placehold.co/300x300?text=3',
+            'https://placehold.co/300x300?text=4'
+        ];
+        let selectedGridType = 0;
+        let selectedPictureType = 0;
+        const pictureTypeLabels = ['Japanese', 'American', 'Egyptian'];
+
+        function updateOutputDemo() {
+            // Update style label
+            document.getElementById('output-picture-style').innerText = 'Style: ' + pictureTypeLabels[selectedPictureType];
+            // Update grid class
+            const output = document.getElementById('output-images');
+            output.className = 'output-images grid-' + selectedGridType;
+            // Insert comic panel divs
+            output.innerHTML = '';
+            for (let i = 0; i < 4; i++) {
+                const panel = document.createElement('div');
+                panel.className = 'comic-panel panel-' + (i+1);
+                output.appendChild(panel);
+            }
+        }
+        // Call on load
+        updateOutputDemo();
+
+        document.getElementById('generate-btn').onclick = async function() {
+            const prompt = document.querySelector('.search_container input').value;
+            const style = pictureTypeLabels[selectedPictureType];
+            const gridType = selectedGridType;
+            const numPanels = 4; // or set based on grid
+            // Show loading state
+            const output = document.getElementById('output-images');
+            output.innerHTML = '';
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'output-status-message';
+            loadingDiv.style.background = 'rgba(30,30,30,0.85)';
+            loadingDiv.style.color = '#fff';
+            loadingDiv.style.fontWeight = 'bold';
+            loadingDiv.style.fontSize = '1.3rem';
+            loadingDiv.style.textAlign = 'center';
+            loadingDiv.style.padding = '40px 0';
+            loadingDiv.style.borderRadius = '10px';
+            loadingDiv.innerText = 'Generating...';
+            output.appendChild(loadingDiv);
+            try {
+                const response = await fetch('http://localhost:8000/generate-comic', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt, style, grid_type: gridType, num_panels: numPanels })
+                });
+                const data = await response.json();
+                output.innerHTML = '';
+                data.images.forEach((img, i) => {
+                    const panel = document.createElement('img');
+                    panel.src = img;
+                    panel.className = 'output-img';
+                    output.appendChild(panel);
+                });
+                // Re-apply grid class for layout
+                output.className = 'output-images grid-' + selectedGridType;
+            } catch (e) {
+                output.innerHTML = '';
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'output-status-message';
+                errorDiv.style.background = 'rgba(200,0,0,0.85)';
+                errorDiv.style.color = '#fff';
+                errorDiv.style.fontWeight = 'bold';
+                errorDiv.style.fontSize = '1.3rem';
+                errorDiv.style.textAlign = 'center';
+                errorDiv.style.padding = '40px 0';
+                errorDiv.style.borderRadius = '10px';
+                errorDiv.innerText = 'Error generating images.';
+                output.appendChild(errorDiv);
+            }
+        };
+    </script>
+</body>
+</html>
